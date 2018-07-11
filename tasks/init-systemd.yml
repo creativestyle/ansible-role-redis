@@ -2,3 +2,4 @@
   template:
     src: redis.service.j2
     dest: "/usr/lib/systemd/system/{{ redis_daemon }}.service"
+  notify: restart redis

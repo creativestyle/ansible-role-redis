@@ -9,7 +9,8 @@ redis_instance_name: ~
 
 redis_daemon: "redis{% if redis_instance_name %}-{{ redis_instance_name }}{% endif %}"
 redis_conf_path: "/etc/{{ redis_daemon }}.conf"
-redis_pidfile_path: "/var/run/redis/{{ redis_daemon }}.pid"
+redis_piddir: "/var/run/redis/"
+redis_pidfile_path: "{{ redis_piddir }}/{{ redis_daemon }}.pid"
 
 redis_port: 6379
 redis_bind_interface: 127.0.0.1

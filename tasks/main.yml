@@ -12,16 +12,20 @@
 - include_tasks: init-systemd.yml
   when: ansible_service_mgr == 'systemd'
 
-- include_tasks: init-systemd.yml
-  when: ansible_service_mgr == 'sysvinit'
+- include_tasks: init-sysv.yml
+  # upstart (used on amilinux-1) has backwards compat with sysvinit scripts
+  when: ansible_service_mgr == 'sysvinit' or ansible_service_mgr == 'upstart'
 
-- name: Make sure dbdir exists.
+- name: Make sure directories exist.
   file:
-    path: "{{ redis_dbdir }}"
+    path: "{{ item }}"
     state: directory
     owner: redis
     group: redis
     mode: 0755
+  with_items:
+    - "{{ redis_dbdir }}"
+    - "{{ redis_piddir }}"
 
 - name: Ensure Redis is configured.
   template:

@@ -17,8 +17,8 @@
 . /etc/rc.d/init.d/functions
 
 name="{{ redis_daemon }}-server"
-exec="/usr/bin/$name"
-shut="/usr/libexec/redis-shutdown {{ redis_daemon }}"
+exec="/usr/bin/redis-server"
+shut="/usr/libexec/redis-shutdown"
 pidfile="{{ redis_pidfile_path }}"
 REDIS_CONFIG="{{ redis_conf_path }}"
 
@@ -39,7 +39,7 @@ start() {
 
 stop() {
     echo -n $"Stopping $name: "
-    [ -x $shut ] && $shut
+    [ -x $shut ] && $shut {{ redis_daemon }}
     retval=$?
     if [ -f $pidfile ]
     then
