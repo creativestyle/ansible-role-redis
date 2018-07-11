@@ -1,8 +1,3 @@
----
-# Variable setup.
-- name: Include OS-specific variables.
-  include_vars: "{{ ansible_os_family }}.yml"
-
 - name: Define redis_package.
   set_fact:
     redis_package: "{{ __redis_package }}"
