@@ -1,0 +1,5 @@
+- name: Install SysV init script.
+  template:
+    src: redis.service.j2
+    dest: "/etc/init.d/{{ redis_daemon }}"
+    mode: 0755

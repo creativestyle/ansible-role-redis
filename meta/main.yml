@@ -12,18 +12,6 @@ galaxy_info:
       versions:
       - 6
       - 7
-    - name: Fedora
-      versions:
-      - all
-    - name: Debian
-      versions:
-      - all
-    - name: Ubuntu
-      versions:
-      - all
-    - name: Archlinux
-      versions:
-      - all
   galaxy_tags:
     - database
     - development

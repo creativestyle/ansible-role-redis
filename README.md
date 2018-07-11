@@ -10,6 +10,16 @@ On RedHat-based distributions, requires the EPEL repository (you can simply add 
 
 ## Role Variables
 
+    redis_instance_name: ~
+
+If set then used as a suffix for service name, data directory, config file, log files, etc.
+This allows to set up multiple instances of redis running on the same server and configure them differently.
+
+It is especially useful when you've got two sets of data which should have different maxmemory policies, like
+cache and sessions.
+
+Remember that you have to use a different port for each of them.
+
     redis_enablerepo: epel
 
 (Used only on RHEL/CentOS) The repository to use for Redis installation.

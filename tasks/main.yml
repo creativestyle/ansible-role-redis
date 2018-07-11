@@ -8,15 +8,25 @@
     redis_package: "{{ __redis_package }}"
   when: redis_package is not defined
 
-# Setup/install tasks.
-- include_tasks: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat'
+- name: Ensure Redis is installed.
+  package:
+    name: "{{ redis_package }}"
+    state: present
+    enablerepo: "{{ redis_enablerepo }}"
 
-- include_tasks: setup-Debian.yml
-  when: ansible_os_family == 'Debian'
+- include_tasks: init-systemd.yml
+  when: ansible_service_mgr == 'systemd'
 
-- include_tasks: setup-Archlinux.yml
-  when: ansible_os_family == 'Archlinux'
+- include_tasks: init-systemd.yml
+  when: ansible_service_mgr == 'sysvinit'
+
+- name: Make sure dbdir exists.
+  file:
+    path: "{{ redis_dbdir }}"
+    state: directory
+    owner: redis
+    group: redis
+    mode: 0755
 
 - name: Ensure Redis is configured.
   template:
