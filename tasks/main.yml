@@ -34,5 +34,50 @@
     mode: 0644
   notify: restart redis
 
+# This avoids OOM errors when redis saves to disk!
+#
+# Please see "Background saving fails with a fork() error under Linux even if I have a lot of free RAM!"
+# here https://redis.io/topics/faq
+#
+# This needs to be enabled only when we have snapshotting.
+- name: Enable memory overcommit kernel param
+  sysctl:
+    name: vm.overcommit_memory
+    value: 1
+    reload: yes
+    state: present
+  when: redis_persistence_enable
+
+- name: Increase somaxconn kernel param
+  sysctl:
+    name: net.core.somaxconn
+    value: "{{ redis_somaxconn }}"
+    reload: yes
+    state: present
+
+- name: Make sure rc.local is executable
+  file:
+    path: /etc/rc.d/rc.local
+    state: file
+    mode: 0750
+
+- name: Disable Transparent Huge Pages on boot to help latency
+  lineinfile:
+    path: /etc/rc.d/rc.local
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+    - "echo never > /sys/kernel/mm/transparent_hugepage/defrag"
+  register: _redis_enabled_thd
+  notify: restart redis
+
+- name: Disable THP now if just added
+  shell: "{{ item }}"
+  with_items:
+    - "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+    - "echo never > /sys/kernel/mm/transparent_hugepage/defrag"
+  when: _redis_enabled_thd.changed
+
 - name: Ensure Redis is running and enabled on boot.
   service: "name={{ redis_daemon }} state=started enabled=yes"

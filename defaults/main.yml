@@ -22,7 +22,8 @@ redis_logfile: "/var/log/redis/{{ redis_daemon }}-server.log"
 
 redis_databases: 16
 
-# Set to an empty set to disable persistence (saving the DB to disk).
+redis_somaxconn: 65536
+redis_persistence_enable: yes
 redis_save:
   - 900 1
   - 300 10
